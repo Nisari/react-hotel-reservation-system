@@ -71,3 +71,14 @@ select:-webkit-autofill:focus {
     margin-right: 6px;
   }
 }
+
+.header-actions {
+  display: flex;
+  gap: 26px;
+}
+
+.internal-error-banner {
+  width: 520px;
+  float: right;
+  margin-top: 17px;
+}

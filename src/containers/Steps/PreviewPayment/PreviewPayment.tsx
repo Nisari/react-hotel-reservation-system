@@ -8,19 +8,20 @@ import {
   CreditCard,
   ReservationDetails,
   Select,
-  TextField,
+  TextField
 } from "components";
 import {
   getCreditCardYears,
   getCreditCardMonths,
   isValidName,
-  ccNumberMaskPipe,
+  ccNumberMaskPipe
 } from "lib/scripts/utils";
 
 import formClasses from "components/Form/Form.module.scss";
 import styleClasses from "./PreviewPayment.module.scss";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Alert } from "react-bootstrap";
 declare global {
   type TypeCardDetails = {
     [stepIndex: string]: {
@@ -39,29 +40,29 @@ const step: TypeStep = {
     cardHolder: {
       value: "",
       isTouched: false,
-      isValid: true,
+      isValid: true
     },
     cardNumber: {
       value: "",
       isTouched: false,
-      isValid: true,
+      isValid: true
     },
     month: {
       value: "",
       isTouched: false,
-      isValid: false,
+      isValid: false
     },
     year: {
       value: "",
       isTouched: false,
-      isValid: false,
+      isValid: false
     },
     cardCvv: {
       value: "",
       isTouched: false,
-      isValid: false,
-    },
-  },
+      isValid: false
+    }
+  }
 };
 
 const PreviewPayment: React.FC<TypeReservationStep> = (
@@ -80,6 +81,7 @@ const PreviewPayment: React.FC<TypeReservationStep> = (
     useCreditCard();
 
   const [monthOptions, setMonthOptions] = useState<TypeOption[]>([]);
+  const [isPaymentClicked, setPaymentClicked] = useState<boolean>(false);
 
   const [isErrorLog, setIsErrorLog] = useState<Boolean>(false);
 
@@ -89,11 +91,22 @@ const PreviewPayment: React.FC<TypeReservationStep> = (
       setMonthOptions(
         getCreditCardMonths(formState.inputs.year.value).map((month) => ({
           label: month,
-          value: month,
+          value: month
         }))
       );
     }
   }, [formState.inputs.year.value, monthOptions.length]);
+
+  useEffect(() => {
+    setLocalStorageValue({
+      ...step,
+      isValid: formState.isValid,
+      inputs: { ...formState.inputs },
+      username: localStorage.getItem("username")
+        ? (localStorage.getItem("username") as any)
+        : undefined
+    });
+  }, []);
 
   // Go to next step if the newReservation is resolved
   useEffect(() => {
@@ -103,8 +116,12 @@ const PreviewPayment: React.FC<TypeReservationStep> = (
         ...step,
         isValid: formState.isValid,
         inputs: { ...formState.inputs },
+        username: localStorage.getItem("username")
+          ? (localStorage.getItem("username") as any)
+          : undefined
       });
     }
+    console.log("checkout", localStorage.getItem("username"));
   }, [cart.newReservation.status, formState, props, setLocalStorageValue]);
 
   useEffect(() => {
@@ -112,31 +129,31 @@ const PreviewPayment: React.FC<TypeReservationStep> = (
   }, [isErrorLog]);
 
   const notify = () => {
-    setTimeout(() => {
-      const reqBody = {
-        errorLog: {
-          username: "johndoe",
-          potential_customer: true,
-          feature_name: "coupon code",
-          error:
-            "Internal Server Error: We've encountered an issue in authentication",
-        },
-      };
-      const requestOptions = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(reqBody),
-      };
+    setPaymentClicked(true);
+    const reqBody = {
+      errorLog: {
+        username: "johndoe",
+        potential_customer: true,
+        feature_name: "coupon code",
+        error:
+          "Internal Server Error: We've encountered an issue in authentication"
+      }
+    };
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(reqBody)
+    };
 
-      fetch("http://localhost:3000/errorDetails", requestOptions).then(
-        async (response) => {
-          console.log("success");
-        }
-      );
-      toast.error(
-        "Internal Server Error: We've encountered an issue. Don't worry, we've created a support ticket for you"
-      );
-    }, 1000);
+    fetch("http://localhost:3000/errorDetails", requestOptions).then(
+      async (response) => {
+        setTimeout(() => {
+          toast.error(
+            "Internal Server Error: We've encountered an issue. Don't worry, we've created a support ticket for you"
+          );
+        }, 2000);
+      }
+    );
   };
 
   return monthOptions.length && Object.keys(formState.inputs).length ? (
@@ -168,7 +185,7 @@ const PreviewPayment: React.FC<TypeReservationStep> = (
                       "room",
                       "view",
                       "coupon",
-                      "totals",
+                      "totals"
                     ]
                   : [
                       "checkin",
@@ -177,7 +194,7 @@ const PreviewPayment: React.FC<TypeReservationStep> = (
                       "children",
                       "room",
                       "view",
-                      "totals",
+                      "totals"
                     ]
               }
             />
@@ -233,7 +250,7 @@ const PreviewPayment: React.FC<TypeReservationStep> = (
                   validity={formState.inputs.month.isValid}
                   isTouched={formState.inputs.month.isTouched}
                   validators={[
-                    [validatorjs.isLength, { min: 1, max: undefined }],
+                    [validatorjs.isLength, { min: 1, max: undefined }]
                   ]}
                   validationMessage="Please select a valid expiration month"
                 />
@@ -241,14 +258,14 @@ const PreviewPayment: React.FC<TypeReservationStep> = (
                   id="year"
                   options={getCreditCardYears().map((year) => ({
                     label: year.toString(),
-                    value: year.toString(),
+                    value: year.toString()
                   }))}
                   onChange={(id, value, validity) => {
                     inputHandler(id, value, validity);
                     setMonthOptions(
                       getCreditCardMonths(value).map((month) => ({
                         label: month,
-                        value: month,
+                        value: month
                       }))
                     );
 
@@ -265,7 +282,7 @@ const PreviewPayment: React.FC<TypeReservationStep> = (
                   validity={formState.inputs.year.isValid}
                   isTouched={formState.inputs.year.isTouched}
                   validators={[
-                    [validatorjs.isLength, { min: 1, max: undefined }],
+                    [validatorjs.isLength, { min: 1, max: undefined }]
                   ]}
                   validationMessage="Please select a valid expiration year"
                 />
@@ -279,7 +296,7 @@ const PreviewPayment: React.FC<TypeReservationStep> = (
                 isTouched={formState.inputs.cardCvv.isTouched}
                 validators={[
                   [validatorjs.isNumeric],
-                  [validatorjs.isLength, { min: 3, max: 4 }],
+                  [validatorjs.isLength, { min: 3, max: 4 }]
                 ]}
                 validationMessage="Please enter a valid CVV"
                 onChange={inputHandler}
@@ -301,7 +318,7 @@ const PreviewPayment: React.FC<TypeReservationStep> = (
         <div
           className={[
             formClasses["form__normal-row"],
-            formClasses["form__actions"],
+            formClasses["form__actions"]
           ].join(" ")}
         >
           <Button
@@ -325,12 +342,17 @@ const PreviewPayment: React.FC<TypeReservationStep> = (
                 dispatchNewReservation(formState.inputs);
               }
             }}
-            disabled={!formState.isValid}
+            disabled={!formState.isValid || isPaymentClicked}
             loading={cart.newReservation.status === "pending"}
           >
             Pay and finish
           </Button>
         </div>
+        {isPaymentClicked && (
+          <div className="internal-error-banner">
+            <Alert variant="danger">Internal Server Error</Alert>
+          </div>
+        )}
       </form>
     </Portlet>
   ) : null;

@@ -75,7 +75,19 @@ const Header: React.FC<TypeHeader> = (props: TypeHeader) => {
             Reservation System
           </span>
         </div>
-        <div className={styleClasses["header__actions"]}>
+        <div className={`${styleClasses["header__actions"]} header-actions`}>
+          {props.activeStep !== 0 && (
+            <Button
+              type="button"
+              onClick={() => {
+                props.stepChangeHandler(0, { isValid: false, inputs: {} }, 0);
+                clearStoredValues();
+              }}
+            >
+              Make a new reservation
+            </Button>
+          )}
+
           {!isLoggedIn && (
             <Button type="button" onClick={handleShow}>
               Login
@@ -110,18 +122,6 @@ const Header: React.FC<TypeHeader> = (props: TypeHeader) => {
                 </Navbar.Collapse>
               </Navbar>
             </>
-          )}
-
-          {props.activeStep !== 0 && (
-            <Button
-              type="button"
-              onClick={() => {
-                props.stepChangeHandler(0, { isValid: false, inputs: {} }, 0);
-                clearStoredValues();
-              }}
-            >
-              Make a new reservation
-            </Button>
           )}
         </div>
       </header>
