@@ -81,4 +81,10 @@ select:-webkit-autofill:focus {
   width: 520px;
   float: right;
   margin-top: 17px;
+
+  .title {
+    font-size: 18px;
+    font-weight: bold;
+    padding-right: 10px;
+  }
 }

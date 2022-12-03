@@ -348,9 +348,15 @@ const PreviewPayment: React.FC<TypeReservationStep> = (
             Pay and finish
           </Button>
         </div>
-        {isPaymentClicked && (
+        {!isPaymentClicked && (
           <div className="internal-error-banner">
-            <Alert variant="danger">Internal Server Error</Alert>
+            <Alert variant="danger">
+              <span className="title">Internal Server Error: </span>
+              <span className="description">
+                Payment failed due to Lorem Ipsum is simply dummy text of the
+                printing and typesetting industry.{" "}
+              </span>
+            </Alert>
           </div>
         )}
       </form>
