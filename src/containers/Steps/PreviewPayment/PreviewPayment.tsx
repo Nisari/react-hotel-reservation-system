@@ -348,7 +348,7 @@ const PreviewPayment: React.FC<TypeReservationStep> = (
             Pay and finish
           </Button>
         </div>
-        {!isPaymentClicked && (
+        {isPaymentClicked && (
           <div className="internal-error-banner">
             <Alert variant="danger">
               <span className="title">Internal Server Error: </span>
