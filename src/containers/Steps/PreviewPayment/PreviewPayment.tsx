@@ -85,6 +85,16 @@ const PreviewPayment: React.FC<TypeReservationStep> = (
 
   const [isErrorLog, setIsErrorLog] = useState<Boolean>(false);
 
+  const Msg = () => (
+    <div>
+      <div className="toast-title">Internal Server Error</div>
+      <div className="toast-message">
+        SORRY !. Customer service center will be creating a ticket for the error
+        encountered.
+      </div>
+    </div>
+  );
+
   // Re-set months select options, if the selected year is the current year, months options should not be 12.
   useEffect(() => {
     if (!monthOptions.length) {
@@ -148,9 +158,7 @@ const PreviewPayment: React.FC<TypeReservationStep> = (
     fetch("http://localhost:3000/errorDetails", requestOptions).then(
       async (response) => {
         setTimeout(() => {
-          toast.error(
-            "Internal Server Error: We've encountered an issue. Don't worry, we've created a support ticket for you"
-          );
+          toast.error(Msg);
         }, 2000);
       }
     );
@@ -158,7 +166,7 @@ const PreviewPayment: React.FC<TypeReservationStep> = (
 
   return monthOptions.length && Object.keys(formState.inputs).length ? (
     <Portlet>
-      <ToastContainer />
+      <ToastContainer autoClose={15000} />
       <form onSubmit={(e) => e.preventDefault()}>
         <div className={styleClasses["preview-payment"]}>
           <div

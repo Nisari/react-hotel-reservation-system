@@ -88,3 +88,16 @@ select:-webkit-autofill:focus {
     padding-right: 10px;
   }
 }
+
+.toast-title {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.toast-message {
+  margin-top: 6px;
+}
+
+.Toastify__toast-container {
+  width: 400px;
+}
